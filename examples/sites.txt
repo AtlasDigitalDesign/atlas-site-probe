@@ -1,0 +1,3 @@
+# Demo list: sites owned by the author. Do not commit prospect or client lists.
+https://atlasdigital.design/
+https://atlasofplantbased.com/

@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "atlas-site-probe"
+version = "0.1.0"
+description = "Read-only checks for the silent failures on small online stores: canonicals, noindex, broken JSON-LD, missing tags, dead carts."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Jeff Combs", email = "jeff@atlasdigital.design"}]
+keywords = ["seo", "structured-data", "json-ld", "shopify", "audit", "hubspot", "clay"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Topic :: Internet :: WWW/HTTP :: Site Management",
+]
+
+[project.urls]
+Homepage = "https://github.com/AtlasDigitalDesign/atlas-site-probe"
+
+[project.scripts]
+atlas-site-probe = "atlas_site_probe.__main__:main"
+
+[tool.setuptools]
+packages = ["atlas_site_probe"]
