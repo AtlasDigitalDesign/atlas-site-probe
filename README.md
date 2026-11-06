@@ -64,13 +64,53 @@ For each site over the threshold, the probe looks up the company by domain, crea
 
 ![A HubSpot company record with the note the probe attached](docs/hubspot-note.png)
 
+## Agent View: what machines read first
+
+Every expensive problem I have found on a small store looked fine in a browser and was wrong to the machine reading it: a modification button sitting at the top of every product description that AI shopping agents receive, CSS in the plain-text field feeds read, a feed advertising the wrong price on most rows, a robots rule that cancelled a noindex. Agent View reads a store the way those machines do and reports what each one gets first.
+
+```bash
+# one store
+python -m atlas_site_probe.agent_view example-store.com
+
+# Jeff's three sites, compare with last week, notify on anything new
+python -m atlas_site_probe.agent_view my_sites.json --diff --notify --csv runs/latest.csv
+
+# a "before" row from a saved product export, for a fix you are about to ship
+python -m atlas_site_probe.agent_view x --snapshot products_before.json --site-name example-store.com
+```
+
+What it records for each site, with the first 160 characters of each labelled "reads first":
+
+| Surface | What it checks |
+|---|---|
+| Product text as agents get it (`/products.json`) | Title words missing from the opening; a call to action before the product; CSS, script or template placeholders in the text; empty descriptions |
+| Collection text (`/collections.json`) | The same checks on the plain-text field feeds and catalogs read |
+| Agent endpoints | `/.well-known/ucp` (version, endpoint), `tools/list` on the UCP MCP endpoint and on the legacy `/api/mcp`, both labelled; a fixed set of buyer searches through `search_catalog`, with what came back first |
+| `llms.txt` | Exists, and the product count it states matches the live catalog |
+| `robots.txt` | Allowed or blocked for GPTBot, OAI-SearchBot, ChatGPT-User, ClaudeBot, Claude-SearchBot, PerplexityBot, Google-Extended, Applebot-Extended and Bingbot; noindex pages that robots blocks, so the noindex is never read |
+| Structured data | The JSON-LD Product description (does it open with the product or a call to action) and whether the Offer price matches the live price |
+| Feeds (optional) | Each feed row's price and link against the live product, with the mismatch rate |
+
+Non-Shopify sites get the file and structured data checks, with the meta description and JSON-LD description as the stand-in for "reads first". A site entry can name a `sample_page` (a plan page) so the read is a product page rather than the homepage.
+
+Every site, whatever the platform, is also read for the agent surfaces it publishes: a UCP profile and catalog, an MCP server card at `/.well-known/mcp/server-card.json`, an MCP endpoint at `/mcp` with its tool names, and an `llms.txt`. `--census table.md` writes those as one Markdown row per site with the date checked, which is how a question like "which house plan sellers have any of this" gets answered from a list of domains rather than from memory. A `group` and `note` on each site entry are carried into the CSV and the census table, so a prospect list stays sorted by who has already been contacted.
+
+```bash
+# a prospect list with groups, plus the census table
+python -m atlas_site_probe.agent_view prospects.json --csv runs/prospects.csv --census runs/census.md --runs runs/prospects
+```
+
+Every run saves a dated file in `runs/`. With `--diff` the next run reports new, fixed and unchanged findings against the last one; `--notify` raises a Mac notification when something new appears; `--catch-log <file>` appends new findings under a "Probe found, not yet confirmed" heading in a catch log for a person to confirm. Calls through UCP carry an agent profile URL (`--profile`); the default is Atlas Digital Design's own, hosted at atlasdigital.design, and if that file doesn't answer the run falls back to Shopify's hosted example profile so a missing file never reads as a store refusing agents. One unreachable site is recorded as an error row and the run carries on.
+
+Read-only, standard library only, at most about a dozen requests per site.
+
 ## Tests
 
 ```bash
 python -m unittest discover -s tests -t .
 ```
 
-Each fixture in `tests/fixtures/` carries one known defect: a JSON-LD block with a trailing comma, two canonicals that point away from the page, a `noindex` meta tag, a `noindex` header served over a local HTTP server, a 404, and an unreachable host. The tests check that the probe reports each defect and that the clean page reports nothing. The HubSpot tests run in dry-run mode and send nothing.
+Each fixture in `tests/fixtures/` carries one known defect: a JSON-LD block with a trailing comma, two canonicals that point away from the page, a `noindex` meta tag, a `noindex` header served over a local HTTP server, a 404, and an unreachable host. The tests check that the probe reports each defect and that the clean page reports nothing. The HubSpot tests run in dry-run mode and send nothing. Agent View has its own fixtures in `tests/fixtures/agent_view/`: a description that opens with a call to action, one that opens with CSS, one with a template placeholder, a clean one, an `llms.txt` with the wrong count, a robots file that blocks GPTBot, a feed row with the wrong price, and a product page whose structured data opens with a call to action.
 
 ## Limits
 

@@ -6,3 +6,8 @@ dist/
 .env
 results*.csv
 results*.json
+runs/
+
+# local handoffs and scratch, never for the public repo
+HANDOFF_*.md
+_to_delete/

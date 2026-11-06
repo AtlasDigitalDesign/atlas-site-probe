@@ -1,0 +1,26 @@
+{
+  "_note": "Jeff's weekly Agent View monitor. Feed URLs and noindex paths are per site. Edit freely; the probe never writes to any site.",
+  "sites": [
+    {
+      "url": "https://intertwinehouseplans.com",
+      "count_filter": "plan set",
+      "count_noun": "plan",
+      "queries": [
+        "elevated coastal house plan on pilings 3 bedroom",
+        "narrow lot beach house plan",
+        "house plan with elevator"
+      ],
+      "noindex_paths": ["/collections/study-sets", "/products/sandy-dune-study-set"],
+      "feed_url": null,
+      "_feed_note": "Set feed_url to the Pinterest Liquid feed URL to turn on the price-match check (the Sept 80% bug)."
+    },
+    {
+      "url": "https://atlasofplantbased.com",
+      "count_noun": "page"
+    },
+    {
+      "url": "https://atlasdigital.design",
+      "count_noun": "page"
+    }
+  ]
+}
