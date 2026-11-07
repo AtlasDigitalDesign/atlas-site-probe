@@ -23,6 +23,14 @@ class BodyTests(unittest.TestCase):
         self.assertIn("product description opens with a call to action before the product", f)
         self.assertTrue(first.startswith("Would you like to customize this plan?"))
 
+    def test_product_named_before_a_quote_word_is_clean(self):
+        # A study set that names itself first, then says "builder quotes", is not CTA-first.
+        html = ("<p>The Casa Azul Study Set includes a fully dimensioned first and second floor plan, "
+                "the roof plan, and exterior elevations from the front, rear, left and right, enough to get "
+                "builder quotes and check the design against your lot. Not for construction.</p>")
+        f, _ = check_body("Casa Azul - Study Set", html)
+        self.assertFalse(any("call to action" in x for x in f), f)
+
     def test_css_first_is_flagged(self):
         f, first = check_body("House Plans", body("css_first.html"), kind="collection")
         self.assertIn("collection description carries CSS that reaches plain-text readers", f)
@@ -52,6 +60,20 @@ class SiteFileTests(unittest.TestCase):
         f, info = check_llms(body("llms_wrong_count.txt"), live_count=68)
         self.assertEqual(f, ["llms.txt says 56 plans, live catalog has 68"])
         self.assertIn(56, info["stated_counts"])
+
+    def test_llms_ignores_cents_and_collection_counts(self):
+        text = ("# Store\nPDF sets start at $1,040.95 for house plans and $926.95 for garage plans.\n"
+                "Thirty-eight plans sit in the Elevated collection; 38 plans are drawn on pilings and 21 plans have an elevator.")
+        f, info = check_llms(text, live_count=68)
+        self.assertEqual(f, [])
+        self.assertNotIn(95, info["stated_counts"])
+        # one stated count above the catalog is still a finding
+        self.assertEqual(check_llms("We sell 80 plans.", live_count=68)[0], ["llms.txt says 80 plans, live catalog has 68"])
+
+    def test_llms_soft_404_counts_as_missing(self):
+        page = "<!DOCTYPE html><html><head><title>House Plans</title></head><body>Not found</body></html>"
+        self.assertEqual(check_llms(page, live_count=10)[0], ["no llms.txt"])
+        self.assertFalse(census_surfaces({"llms_txt": page})["llms_txt"])
 
     def test_llms_right_count_and_missing(self):
         self.assertEqual(check_llms(body("llms_wrong_count.txt"), live_count=56)[0], [])

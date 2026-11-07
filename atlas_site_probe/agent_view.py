@@ -37,7 +37,7 @@ TITLE_WINDOW = 200
 AI_BOTS = ["GPTBot", "OAI-SearchBot", "ChatGPT-User", "ClaudeBot", "Claude-SearchBot",
            "PerplexityBot", "Google-Extended", "Applebot-Extended", "Bingbot"]
 
-CTA_WORDS = ["would you like", "request a", "quote", "click", "buy now", "add to cart", "sign up"]
+CTA_WORDS = ["would you like", "request a", "a quote", "free quote", "click", "buy now", "add to cart", "sign up"]
 
 DEFAULT_PROFILE = "https://atlasdigital.design/.well-known/ucp-agent-profile.json"
 # Shopify's own hosted example profile. Used when the Atlas profile isn't published yet,
@@ -104,7 +104,10 @@ def check_body(title: str, body_html: str, kind: str = "product") -> tuple[list[
     opening = low[:TITLE_WINDOW]
     first_spec = re.search(r"\d|:", opening)
     cta_at = min((opening.find(w) for w in CTA_WORDS if w in opening), default=-1)
-    if cta_at >= 0 and (first_spec is None or cta_at < first_spec.start()):
+    # A description that names the product before the CTA has introduced itself;
+    # only a CTA ahead of both the name and the first spec is the finding.
+    title_at = min((opening.find(w) for w in words if w in opening), default=-1)
+    if cta_at >= 0 and (first_spec is None or cta_at < first_spec.start()) and (title_at < 0 or cta_at < title_at):
         findings.append(f"{kind} description opens with a call to action before the {kind}")
     if has_style or CSS_PATTERN.search(text[:600]):
         findings.append(f"{kind} description carries CSS that reaches plain-text readers")
@@ -117,15 +120,29 @@ def check_body(title: str, body_html: str, kind: str = "product") -> tuple[list[
 
 # ---------- llms.txt, robots, structured data, feeds ----------
 
+def is_html_page(text: str | None) -> bool:
+    """True when a text file request came back as an HTML page (a soft 404)."""
+    head = (text or "").lstrip("\ufeff \t\r\n")[:200].lower()
+    return head.startswith("<!doctype") or head.startswith("<html") or "<head" in head
+
+
 def check_llms(text: str | None, live_count: int | None, noun: str = "plan") -> tuple[list[str], dict]:
+    if is_html_page(text):
+        text = None  # the site answered /llms.txt with its 404 page or homepage
     info: dict = {"exists": text is not None, "stated_counts": [], "live_count": live_count, "reads_first": ""}
     if text is None:
         return ["no llms.txt"], info
     info["reads_first"] = " ".join(text.split())[:READS_FIRST]
-    nums = [int(n) for n in re.findall(r"\b(\d{1,4})\b\s+(?:\w+\s+){0,3}" + noun, text, flags=re.I)]
+    # (?<![\d.,$]) keeps the cents of "$926.95 for garage plans" out of the counts.
+    nums = [int(n) for n in re.findall(r"(?<![\d.,$])\b(\d{1,4})\b\s+(?:\w+\s+){0,3}" + noun, text, flags=re.I)]
     info["stated_counts"] = nums
     if live_count is not None and nums and live_count not in nums:
-        return [f"llms.txt says {nums[0]} {noun}s, live catalog has {live_count}"], info
+        # Several stated counts are usually collection sizes, which are allowed to
+        # differ from the catalog; one count is read as the catalog total.
+        over = [n for n in nums if n > live_count]
+        if len(nums) == 1 or over:
+            said = over[0] if over else nums[0]
+            return [f"llms.txt says {said} {noun}s, live catalog has {live_count}"], info
     return [], info
 
 
@@ -373,7 +390,7 @@ def census_surfaces(cap: dict) -> dict:
         "ucp_catalog": "search_catalog" in ucp_tools,
         "mcp_card": isinstance(mcp_card, dict),
         "mcp_tools": mcp_tools,
-        "llms_txt": bool(cap.get("llms_txt")),
+        "llms_txt": bool(cap.get("llms_txt")) and not is_html_page(cap.get("llms_txt")),
     }
     if isinstance(mcp_card, dict):
         s["mcp_card_name"] = str(mcp_card.get("name") or mcp_card.get("title") or "")
@@ -622,7 +639,7 @@ def capture_site(url: str, profile: str = DEFAULT_PROFILE, queries: list[str] | 
         cap["product_page_price"] = None
 
     s, txt = _get(f"{base}/llms.txt", "text/plain")
-    cap["llms_txt"] = txt if s == 200 and txt.strip() else None
+    cap["llms_txt"] = txt if s == 200 and txt.strip() and not is_html_page(txt) else None
     s, txt = _get(f"{base}/robots.txt", "text/plain")
     cap["robots_txt"] = txt if s == 200 else None
     if feed_url:
