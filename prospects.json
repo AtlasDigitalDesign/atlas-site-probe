@@ -59,14 +59,14 @@
   },
   {
    "url": "https://houseplansbydavidwiggins.com",
-   "group": "never_contacted",
-   "note": "Draft ready in the Sept 27 sequence. Vue app serves {{package.price}} to crawlers",
+   "group": "contacted_no_reply",
+   "note": "Draft ready in the Sept 27 sequence. Vue app serves {{package.price}} to crawlers. Contact form Nov 6, 180-char version ({{item.name}} on the homepage). Full text in Contact_Form_Prospects_20261106_v2.",
    "sample_page": "/plan/1421"
   },
   {
    "url": "https://silaslaceydesigns.com",
-   "group": "never_contacted",
-   "note": "Draft ready. WooCommerce with the store switched off, plans sold on The House Plan Company"
+   "group": "contacted_no_reply",
+   "note": "Draft ready. WooCommerce with the store switched off, plans sold on The House Plan Company. Contact form Nov 6, second touch, 180-char version (turn the store on). Full text in Contact_Form_Prospects_20261106_v2."
   },
   {
    "url": "https://buildmax.com",
@@ -76,13 +76,13 @@
   },
   {
    "url": "https://truoba.com",
-   "group": "never_contacted",
-   "note": "Tier A, European team, Delaware agent. WooCommerce, Offer on none of 6 sampled"
+   "group": "contacted_no_reply",
+   "note": "Tier A, European team, Delaware agent. WooCommerce, Offer on none of 6 sampled. Emailed Nov 6 (Ignas, info@; no Offer markup)."
   },
   {
    "url": "https://homepatterns.com",
-   "group": "never_contacted",
-   "note": "Tier B. Shopify legacy Jumpstart theme, houseplans.com exclusive",
+   "group": "contacted_no_reply",
+   "note": "Tier B. Shopify legacy Jumpstart theme, houseplans.com exclusive. Emailed Nov 6 (Brooks Ballard, info@; spec-block openings).",
    "queries": [
     "southern house plan with porch"
    ]
@@ -90,15 +90,15 @@
   {
    "url": "https://hpzplans.com",
    "group": "never_contacted",
-   "note": "House Plan Zone, Hattiesburg. Shopify Dawn, 478 plans, 3.7 MB collection pages",
+   "note": "House Plan Zone, Hattiesburg. Shopify Dawn, 478 plans, 3.7 MB collection pages. Parked Nov 6 on Jeff's call: in-house help (blog, SEO app), weak retainer fit; one-off fixes later maybe.",
    "queries": [
     "acadian house plan 4 bedroom"
    ]
   },
   {
    "url": "https://houseplangallery.com",
-   "group": "never_contacted",
-   "note": "House Plan Gallery, Hattiesburg. Shopify, one JSON-LD block per product fails to parse",
+   "group": "contacted_no_reply",
+   "note": "House Plan Gallery, Hattiesburg. Shopify, one JSON-LD block per product fails to parse. Emailed Nov 6 (Mark Mathis, sales@; 285 descriptions carry code).",
    "queries": [
     "french country house plan"
    ]
@@ -113,8 +113,8 @@
   },
   {
    "url": "https://rockymountainplan.com",
-   "group": "never_contacted",
-   "note": "Denver. Shopify Tinker theme, 87 plans, no meta descriptions",
+   "group": "contacted_no_reply",
+   "note": "Denver. Shopify Tinker theme, 87 plans, no meta descriptions. Emailed Nov 6 (Heather and Jason Sellers; 47 empty descriptions).",
    "queries": [
     "mountain modern house plan"
    ]
@@ -129,8 +129,8 @@
   },
   {
    "url": "https://sucasashoppe.com",
-   "group": "never_contacted",
-   "note": "Canada (Abbotsford BC). Shopify, 122 stock plans at /collections/products",
+   "group": "not_prospect",
+   "note": "Canada (Abbotsford BC). Shopify, 122 stock plans at /collections/products. Dropped Nov 6: BC interior design firm's side store, plans mixed with furniture and prints.",
    "queries": [
     "modern house plan with garage"
    ]
@@ -153,8 +153,8 @@
   },
   {
    "url": "https://perchplans.com",
-   "group": "never_contacted",
-   "note": "Oct 15 expansion. Shopify CDN observed",
+   "group": "contacted_no_reply",
+   "note": "Oct 15 expansion. Shopify CDN observed. Emailed Nov 6 (info@, $70 JSON-LD price on the Hampshire).",
    "queries": [
     "small house plan"
    ]
@@ -177,8 +177,8 @@
   },
   {
    "url": "https://houseplanstudio.com",
-   "group": "never_contacted",
-   "note": "Oct 15 expansion. Shopify-like, unconfirmed"
+   "group": "not_prospect",
+   "note": "Oct 15 expansion. Shopify-like, unconfirmed. Dropped Nov 6: unfinished store, theme vendor placeholders on the contact page, no sign of a business."
   },
   {
    "url": "https://architecthouseplans.com",
