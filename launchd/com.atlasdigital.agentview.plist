@@ -10,12 +10,12 @@
     <string>--diff</string>
     <string>--notify</string>
     <string>--catch-log</string>
-    <string>/Users/macbookair/Documents/Atlas Digital Design Official/00 ATLAS DISCOVERIES - Catch Log.md</string>
+    <string>/Users/macbookair/My Drive/Atlas Digital Design Official/00 ATLAS DISCOVERIES - Catch Log.md</string>
     <string>--csv</string>
     <string>runs/latest.csv</string>
   </array>
   <key>WorkingDirectory</key>
-  <string>/Users/macbookair/Documents/Atlas Digital Design Official/01 Atlas Digital Design/Products/atlas-site-probe</string>
+  <string>/Users/macbookair/My Drive/Atlas Digital Design Official/01 Atlas Digital Design/Products/atlas-site-probe</string>
   <key>StartCalendarInterval</key><dict><key>Weekday</key><integer>1</integer><key>Hour</key><integer>7</integer><key>Minute</key><integer>40</integer></dict>
   <key>StandardOutPath</key><string>/Users/macbookair/Library/Logs/atlas-agentview.log</string>
   <key>StandardErrorPath</key><string>/Users/macbookair/Library/Logs/atlas-agentview.log</string>
